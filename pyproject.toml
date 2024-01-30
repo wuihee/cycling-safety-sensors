@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "cycling-safety-sensors"
+version = "0.1.0"
+description = "API for the sensors used in Cycling Safety project."
+authors = ["wuihee <wuihee@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
