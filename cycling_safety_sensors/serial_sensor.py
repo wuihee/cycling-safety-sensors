@@ -19,4 +19,10 @@ class SerialSensor(Sensor):
         self.read_distance = read_distance
 
     def get_distance(self) -> int:
+        """
+        Retreive the current distance measured by the sensor.
+
+        Returns:
+            int: Distance measured in cm.
+        """
         return self.read_distance()
