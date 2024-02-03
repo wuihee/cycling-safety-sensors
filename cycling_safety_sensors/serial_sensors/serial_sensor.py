@@ -1,9 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 import serial
 
+from ..sensor import Sensor
 
-class SerialSensorBase(ABC):
+
+class SerialSensor(Sensor):
     """
     Base class for sensors.
     """
@@ -22,18 +24,14 @@ class SerialSensorBase(ABC):
         self.ser = serial.Serial(port, baudrate, timeout=1)
         self.ser.reset_input_buffer()
 
-    @abstractmethod
-    def get_distance(self, protocol: list[int]) -> int:
+    def read_protocol(self) -> list[int]:
         """
-        Retreive the current distance measured by the sensor.
-
-        Args:
-            protocol (list[int]): Current protocol consisting of a list of
-                                  bytes read from the serial port.
+        Attempt to read the protocol from the serial port.
 
         Returns:
-            int: The distance in cm.
+            list[int]: List of bytes consisting of a standard protocol.
         """
+        return self.ser.read(self.protocol_length)
 
     @abstractmethod
     def is_valid_protocol(self, protocol: list[int]) -> bool:

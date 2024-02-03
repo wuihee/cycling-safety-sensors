@@ -1,9 +1,22 @@
-from ..sensor_base import SerialSensorBase
+from ..utils import find_serial_port
+from .serial_sensor import SerialSensor
+
+PORT = find_serial_port()
+BAUDRATE = 115200
+PROTOCOL_LENGTH = 13
+VALID_CHECKSUM_BYTE = 130
 
 
-class LaserBB2XJRT(SerialSensorBase):
-    def __init__(self, port: int, baudrate: int, protocol_length: int) -> None:
-        super().__init__(port, baudrate, protocol_length)
+class LaserBB2XJRT(SerialSensor):
+    """
+    BB2X time of flight laser distance module by JRT Chengdu.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the LaserBB2XJRT sensor.
+        """
+        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH)
 
     def get_distance(self, protocol: list[int]) -> int:
         """
@@ -16,6 +29,10 @@ class LaserBB2XJRT(SerialSensorBase):
         Returns:
             int: The distance measured in cm.
         """
+
+        # TODO: We should not have to pass in a protocol parameter to.
+        # thif function. get_distance should be called by the client.
+
         distance_bytes = protocol[6:9]
         hex_string = "".join(hex(byte)[2:].zfill(2) for byte in distance_bytes)
         return int(hex_string, base=16)
@@ -31,8 +48,7 @@ class LaserBB2XJRT(SerialSensorBase):
         Returns:
             bool: True if protocol is valid, otherwise false.
         """
-        # TODO: Store value 170 in a constant variable.
-        if not protocol or protocol[0] != 170:
+        if not protocol or protocol[0] != VALID_CHECKSUM_BYTE:
             return False
 
         return sum(protocol[1:-1] % 256 == protocol[-1])
