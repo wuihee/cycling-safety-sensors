@@ -27,14 +27,12 @@ class LaserBB2XJRT(SerialSensor):
         """
 
         protocol = self.read_protocol()
-        if self.is_valid_protocol(protocol):
-            distance_bytes = protocol[6:9]
-            hex_string = "".join(
-                hex(byte)[2:].zfill(2) for byte in distance_bytes
-            )
-            return int(hex_string, base=16)
+        if not self.is_valid_protocol(protocol):
+            return -1
 
-        return -1
+        distance_bytes = protocol[6:9]
+        hex_string = "".join(hex(byte)[2:].zfill(2) for byte in distance_bytes)
+        return int(hex_string, base=16)
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
