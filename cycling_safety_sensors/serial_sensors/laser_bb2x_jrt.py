@@ -18,24 +18,23 @@ class LaserBB2XJRT(SerialSensor):
         """
         super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH)
 
-    def get_distance(self, protocol: list[int]) -> int:
+    def get_distance(self) -> int:
         """
         Return the current distance measured by the Laser BB2x JRT.
 
-        Args:
-            protocol (list[int]): Current protocol consisting of a list of
-                                  bytes read from the serial port.
-
         Returns:
-            int: The distance measured in cm.
+            int: The distance measured in cm, or -1 if unable to measure.
         """
 
-        # TODO: We should not have to pass in a protocol parameter to.
-        # thif function. get_distance should be called by the client.
+        protocol = self.read_protocol()
+        if self.is_valid_protocol(protocol):
+            distance_bytes = protocol[6:9]
+            hex_string = "".join(
+                hex(byte)[2:].zfill(2) for byte in distance_bytes
+            )
+            return int(hex_string, base=16)
 
-        distance_bytes = protocol[6:9]
-        hex_string = "".join(hex(byte)[2:].zfill(2) for byte in distance_bytes)
-        return int(hex_string, base=16)
+        return -1
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
