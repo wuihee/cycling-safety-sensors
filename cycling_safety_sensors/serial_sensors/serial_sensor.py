@@ -31,7 +31,27 @@ class SerialSensor(Sensor):
         Returns:
             list[int]: List of bytes consisting of a standard protocol.
         """
-        return self.ser.read(self.protocol_length)
+        return [int(b, 16) for b in self.ser.read(self.protocol_length)]
+
+    def read_distance_value(self, start: int, end: int, byteorder: str) -> int:
+        """
+        Reads distance value from protocol.
+
+        Args:
+            start (int): Starting byte position.
+            end (int): End byte position.
+            byteorder (str): "big" or "little" for big-endian and little-endian
+                             respectively.
+
+        Returns:
+            int: Distance measured.
+        """
+        protocol = self.read_protocol()
+        if not self.is_valid_protocol(protocol):
+            return -1
+
+        distance_bytes = protocol[start:end]
+        return int.from_bytes(distance_bytes, byteorder=byteorder)
 
     @abstractmethod
     def is_valid_protocol(self, protocol: list[int]) -> bool:

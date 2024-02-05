@@ -25,14 +25,7 @@ class LaserBB2XJRT(SerialSensor):
         Returns:
             int: The distance measured in cm, or -1 if unable to measure.
         """
-
-        protocol = self.read_protocol()
-        if not self.is_valid_protocol(protocol):
-            return -1
-
-        distance_bytes = protocol[6:9]
-        hex_string = "".join(hex(byte)[2:].zfill(2) for byte in distance_bytes)
-        return int(hex_string, base=16)
+        return self.read_distance_value(6, 9, "big")
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """

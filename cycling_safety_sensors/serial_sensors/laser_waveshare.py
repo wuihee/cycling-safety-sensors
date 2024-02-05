@@ -3,6 +3,7 @@ from .serial_sensor import SerialSensor
 PORT = "/dev/ttys0"
 BAUDRATE = 921600
 PROTOCOL_LENGTH = 16
+PROTOCOL_HEADER = 87, 0, 255
 
 
 class LaserWaveshare(SerialSensor):
@@ -23,6 +24,19 @@ class LaserWaveshare(SerialSensor):
         Returns:
             int: Distance in cm, otherwise -1 if unable to measure.
         """
-        protocol = self.read_protocol()
-        if not self.is_valid_protocol(protocol):
-            return -1
+        return self.read_distance_value(8, 10, "little")
+
+    def is_valid_protocol(self, protocol: list[int]) -> bool:
+        """
+        Determine if protocol is valid for the Laser Wavershare sensor.
+
+        Args:
+            protocol (list[int]): Protocol consisting of a list of bytes.
+
+        Returns:
+            bool: True if protocol is valid, false otherwise.
+        """
+        if not protocol or protocol[:3] != PROTOCOL_HEADER:
+            return False
+
+        return sum(protocol[:-1]) % 256 == protocol[-1]
