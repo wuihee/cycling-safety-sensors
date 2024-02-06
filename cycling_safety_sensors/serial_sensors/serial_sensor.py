@@ -50,7 +50,7 @@ class SerialSensor(Sensor):
         if not self.is_valid_protocol(protocol):
             return -1
 
-        distance_bytes = protocol[start:end]
+        distance_bytes = protocol[start : end + 1]
         return int.from_bytes(distance_bytes, byteorder=byteorder)
 
     @abstractmethod
