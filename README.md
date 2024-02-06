@@ -16,3 +16,7 @@ The first time I wrote this code, I thought I was being smart by writing "clean 
   - Parameters: `port`, `baudrate`, `protocol_length`
   - `get_distance()` method: Retrieve current distance measured.
   - `is_protocol_valid()`: Validate current protocol.
+- All serial sensors need to go through the same process to read distance measurements:
+  1. Read a set number of bytes from the serial port.
+  2. Extract the bytes representing the distance.
+- Therefore, I used the Template Method strategy pattern to create an abstract base class `SerialSensor` which provided the template for this process. Each serial sensor would just have to inherit from `SerialSensor`, define the port, baudrate, and number of bytes to read and everything would be taken care of.
