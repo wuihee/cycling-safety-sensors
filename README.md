@@ -4,6 +4,10 @@ The goal of this module is to create a standardized API for the Cycling Safety p
 
 The first time I wrote this code, I thought I was being smart by writing "clean code" and reducing redundancies. However, two months later I needed to implement the code for another sensor and I lost my mind trying to integrate it into the tightly-coupled mess that I created. I abstracted way too hard and tried to be too smart. Therefore, I am refactoring the code for the distance sensors into an indpendent module that hopefully allows me to easily integrate new sensors in the future.
 
+## TODO
+
+- Add commands for laser bb2x sensor.
+
 ## Overview
 
 - **Design**: Use a common interface to reduce redundancy and create modular code that can be easily updated for new sensors.
