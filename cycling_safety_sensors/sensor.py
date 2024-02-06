@@ -15,3 +15,4 @@ class Sensor(ABC):
         Returns:
             int: The distance in cm.
         """
+        pass
