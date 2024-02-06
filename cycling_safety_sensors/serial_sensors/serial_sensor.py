@@ -65,3 +65,4 @@ class SerialSensor(Sensor):
         Returns:
             bool: Returns true if valid, otherwise false.
         """
+        pass
