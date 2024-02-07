@@ -1,6 +1,6 @@
 from .serial_sensor import SerialSensor
 
-PORT = "/dev/ttys0"
+PORT = "/dev/ttyS0"
 BAUDRATE = 921600
 PROTOCOL_LENGTH = 16
 PROTOCOL_HEADER = [87, 0, 255]
