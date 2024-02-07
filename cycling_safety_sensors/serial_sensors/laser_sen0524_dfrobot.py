@@ -27,16 +27,3 @@ class LaserSen0524DFRbobot(SerialSensor):
             int: Distance measured in mm.
         """
         return super().get_distance(8, 11, "little")
-
-    def is_valid_protocol(self, protocol: list[int]) -> bool:
-        """
-        Return if protocol is valid for the SEN0524 laser sensor.
-
-        Args:
-            protocol (list[int]): Protocol consisting of a list of bytes read
-                `                 from the serial port.
-
-        Returns:
-            bool: Returns true if protocol is valid, else False.
-        """
-        return super().is_valid_protocol(protocol)

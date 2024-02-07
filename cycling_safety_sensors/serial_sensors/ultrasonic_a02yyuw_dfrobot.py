@@ -27,15 +27,3 @@ class UltrasonicA02YYUWDFRobot(SerialSensor):
             int: Distance measured in mm.
         """
         return super().get_distance(1, 3)
-
-    def is_valid_protocol(self, protocol: list[int]) -> bool:
-        """
-        Determine if protocol is valid for A02YYUW sensor.
-
-        Args:
-            protocol (list[int]): Protocol consisting of list of bytes.
-
-        Returns:
-            bool: True if protocol is valid, else False.
-        """
-        return super().is_valid_protocol(protocol)

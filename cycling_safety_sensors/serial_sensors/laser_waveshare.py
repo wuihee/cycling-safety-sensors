@@ -27,15 +27,3 @@ class LaserWaveshare(SerialSensor):
             int: Distance in cm, otherwise -1 if unable to measure.
         """
         return super().get_distance(8, 11, "little")
-
-    def is_valid_protocol(self, protocol: list[int]) -> bool:
-        """
-        Determine if protocol is valid for the Laser Wavershare sensor.
-
-        Args:
-            protocol (list[int]): Protocol consisting of a list of bytes.
-
-        Returns:
-            bool: True if protocol is valid, false otherwise.
-        """
-        return super().is_valid_protocol(protocol)
