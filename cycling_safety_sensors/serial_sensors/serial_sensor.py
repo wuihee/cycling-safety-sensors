@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 import serial
 
 from ..sensor import Sensor
@@ -33,7 +31,7 @@ class SerialSensor(Sensor):
         """
         return [int(b, 16) for b in self.ser.read(self.protocol_length)]
 
-    def read_distance_value(self, start: int, end: int, byteorder: str) -> int:
+    def get_distance(self, start: int, end: int, byteorder="big") -> int:
         """
         Reads distance value from protocol.
 
@@ -50,19 +48,26 @@ class SerialSensor(Sensor):
         if not self.is_valid_protocol(protocol):
             return -1
 
-        distance_bytes = protocol[start : end + 1]
+        distance_bytes = protocol[start:end]
         return int.from_bytes(distance_bytes, byteorder=byteorder)
 
-    @abstractmethod
-    def is_valid_protocol(self, protocol: list[int]) -> bool:
+    def is_valid_protocol(
+        self, protocol: list[int], header: list[int], start_byte=0
+    ) -> bool:
         """
         Check if given protocol is valid.
 
         Args:
             protocol (list[int]): Current protocol consisting of a list of
                                   bytes read from the serial port.
+            header (list[int]): Often sensors require that the header of the
+                                protocol be fixed.
+            start_byte (int): Position of starting byte to sum for checksum.
 
         Returns:
             bool: Returns true if valid, otherwise false.
         """
-        pass
+        if not protocol or not protocol[: len(header)] == header:
+            return False
+
+        return sum(protocol[start_byte:-1]) % 256 == protocol[-1]

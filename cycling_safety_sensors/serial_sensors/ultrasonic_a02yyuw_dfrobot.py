@@ -3,6 +3,7 @@ from .serial_sensor import SerialSensor
 PORT = "/dev/ttyS0"
 BAUDRATE = 9600
 PROTOCOL_LENGTH = 4
+PROTOCOL_HEADER = []
 
 
 class UltrasonicA02YYUWDFRobot(SerialSensor):
@@ -23,7 +24,7 @@ class UltrasonicA02YYUWDFRobot(SerialSensor):
         Returns:
             int: Distance measured in mm.
         """
-        return self.read_distance_value(1, 2, "big")
+        return super().get_distance(1, 3)
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
@@ -35,7 +36,4 @@ class UltrasonicA02YYUWDFRobot(SerialSensor):
         Returns:
             bool: True if protocol is valid, else False.
         """
-        if not protocol:
-            return False
-
-        return sum(protocol[:3]) & 0x00FF == protocol[3]
+        return super().is_valid_protocol(protocol, PROTOCOL_HEADER)

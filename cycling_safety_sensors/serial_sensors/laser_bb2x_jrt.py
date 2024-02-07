@@ -4,7 +4,7 @@ from .serial_sensor import SerialSensor
 PORT = find_serial_port()
 BAUDRATE = 115200
 PROTOCOL_LENGTH = 13
-VALID_CHECKSUM_BYTE = 130
+PROTOCOL_HEADER = [130]
 GET_DISTANCE_COMMAND = b"\xaa\x00\x00\x20\x00\x01\x00\x02\x23"
 
 
@@ -27,7 +27,7 @@ class LaserBB2XJRT(SerialSensor):
             int: The distance measured in cm, or -1 if unable to measure.
         """
         self.ser.write(GET_DISTANCE_COMMAND)
-        return self.read_distance_value(6, 9, "big")
+        return super().get_distance(6, 10)
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
@@ -40,7 +40,4 @@ class LaserBB2XJRT(SerialSensor):
         Returns:
             bool: True if protocol is valid, otherwise false.
         """
-        if not protocol or protocol[0] != VALID_CHECKSUM_BYTE:
-            return False
-
-        return sum(protocol[1:-1] % 256 == protocol[-1])
+        return super().is_valid_protocol(protocol, PROTOCOL_HEADER, 1)
