@@ -15,7 +15,7 @@ class LaserSen0524DFRbobot(SerialSensor):
         """
         Initialize the SEN0524 laser sensor.
         """
-        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH)
+        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
 
     def get_distance(self) -> int:
         """
@@ -37,4 +37,4 @@ class LaserSen0524DFRbobot(SerialSensor):
         Returns:
             bool: Returns true if protocol is valid, else False.
         """
-        return super().is_valid_protocol(protocol, PROTOCOL_HEADER)
+        return super().is_valid_protocol(protocol)

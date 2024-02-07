@@ -8,7 +8,13 @@ class SerialSensor(Sensor):
     Base class for sensors.
     """
 
-    def __init__(self, port: int, baudrate: int, protocol_length: int) -> None:
+    def __init__(
+        self,
+        port: int,
+        baudrate: int,
+        protocol_length: int,
+        protocol_header: list[int] = [],
+    ) -> None:
         """
         Initialize SerialSensorBase.
 
@@ -17,8 +23,11 @@ class SerialSensor(Sensor):
             baudrate (int): Baudrate of sensor.
             protocol_length (int): The length of the sensor's protocol i.e.
                                    number of bytes.
+            protocol_header (list[int], optional): Fixed protocol header.
+                                                   Defaults to [].
         """
         self.protocol_length = protocol_length
+        self.protocol_header = protocol_header
         self.ser = serial.Serial(port, baudrate, timeout=1)
         self.ser.reset_input_buffer()
 
@@ -51,23 +60,23 @@ class SerialSensor(Sensor):
         distance_bytes = protocol[start:end]
         return int.from_bytes(distance_bytes, byteorder=byteorder)
 
-    def is_valid_protocol(
-        self, protocol: list[int], header: list[int], start_byte=0
-    ) -> bool:
+    def is_valid_protocol(self, protocol: list[int], start_byte=0) -> bool:
         """
         Check if given protocol is valid.
 
         Args:
             protocol (list[int]): Current protocol consisting of a list of
                                   bytes read from the serial port.
-            header (list[int]): Often sensors require that the header of the
-                                protocol be fixed.
             start_byte (int): Position of starting byte to sum for checksum.
 
         Returns:
             bool: Returns true if valid, otherwise false.
         """
-        if not protocol or not protocol[: len(header)] == header:
+        if (
+            not protocol
+            or not protocol[: len(self.protocol_header)]
+            == self.protocol_header
+        ):
             return False
 
         return sum(protocol[start_byte:-1]) % 256 == protocol[-1]

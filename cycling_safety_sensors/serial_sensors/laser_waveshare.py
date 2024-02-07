@@ -15,7 +15,7 @@ class LaserWaveshare(SerialSensor):
         """
         Initialize LaserWaveshare sensor.
         """
-        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH)
+        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
 
     def get_distance(self) -> int:
         """
@@ -36,4 +36,4 @@ class LaserWaveshare(SerialSensor):
         Returns:
             bool: True if protocol is valid, false otherwise.
         """
-        return super().is_valid_protocol(protocol, PROTOCOL_HEADER)
+        return super().is_valid_protocol(protocol)

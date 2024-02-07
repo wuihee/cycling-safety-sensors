@@ -17,7 +17,7 @@ class LaserBB2XJRT(SerialSensor):
         """
         Initialize the LaserBB2XJRT sensor.
         """
-        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH)
+        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
 
     def get_distance(self) -> int:
         """
@@ -40,4 +40,4 @@ class LaserBB2XJRT(SerialSensor):
         Returns:
             bool: True if protocol is valid, otherwise false.
         """
-        return super().is_valid_protocol(protocol, PROTOCOL_HEADER, 1)
+        return super().is_valid_protocol(protocol, 1)
