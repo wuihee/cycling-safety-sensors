@@ -10,7 +10,7 @@ class SerialSensor(Sensor):
 
     def __init__(
         self,
-        port: int,
+        port: str,
         baudrate: int,
         protocol_length: int,
         protocol_header: list[int] = [],
@@ -19,7 +19,7 @@ class SerialSensor(Sensor):
         Initialize SerialSensorBase.
 
         Args:
-            port (int): Port which sensor uses.
+            port (str): Port which sensor uses.
             baudrate (int): Baudrate of sensor.
             protocol_length (int): The length of the sensor's protocol i.e.
                                    number of bytes.

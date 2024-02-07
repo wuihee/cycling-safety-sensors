@@ -1,7 +1,5 @@
-from ..utils import find_serial_port
 from .serial_sensor import SerialSensor
 
-PORT = find_serial_port()
 BAUDRATE = 115200
 PROTOCOL_LENGTH = 13
 PROTOCOL_HEADER = [130]
@@ -13,11 +11,14 @@ class LaserBB2XJRT(SerialSensor):
     BB2X time of flight laser distance module by JRT Chengdu.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, port: str) -> None:
         """
         Initialize the LaserBB2XJRT sensor.
+
+        Args:
+            port (str): Port which the sensor uses.
         """
-        super().__init__(PORT, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
+        super().__init__(port, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
 
     def get_distance(self) -> int:
         """
