@@ -1,6 +1,19 @@
+from dataclasses import dataclass
+
 import serial
 
 from ..sensor import Sensor
+
+
+@dataclass
+class ProtocolSettings:
+    """
+    ProtocolSetup defines a few parameters for the protocol of each sensor.
+    """
+
+    length: int
+    header: list[int]
+    byte_order: str = "big"
 
 
 class SerialSensor(Sensor):
@@ -9,11 +22,7 @@ class SerialSensor(Sensor):
     """
 
     def __init__(
-        self,
-        port: str,
-        baudrate: int,
-        protocol_length: int,
-        protocol_header: list[int] = [],
+        self, port: str, baudrate: int, protocol_settings: ProtocolSettings
     ) -> None:
         """
         Initialize SerialSensorBase.
@@ -21,13 +30,9 @@ class SerialSensor(Sensor):
         Args:
             port (str): Port which sensor uses.
             baudrate (int): Baudrate of sensor.
-            protocol_length (int): The length of the sensor's protocol i.e.
-                                   number of bytes.
-            protocol_header (list[int], optional): Fixed protocol header.
-                                                   Defaults to [].
+            protocol_settings (ProtocolSettings):
         """
-        self.protocol_length = protocol_length
-        self.protocol_header = protocol_header
+        self.settings = protocol_settings
         self.ser = serial.Serial(port, baudrate, timeout=1)
         self.ser.reset_input_buffer()
 
@@ -38,17 +43,15 @@ class SerialSensor(Sensor):
         Returns:
             list[int]: List of bytes consisting of a standard protocol.
         """
-        return [int(b, 16) for b in self.ser.read(self.protocol_length)]
+        return [int(b, 16) for b in self.ser.read(self.settings.length)]
 
-    def get_distance(self, start: int, end: int, byteorder="big") -> int:
+    def get_distance(self, start: int, end: int) -> int:
         """
         Reads distance value from protocol.
 
         Args:
             start (int): Starting byte position.
             end (int): End byte position.
-            byteorder (str): "big" or "little" for big-endian and little-endian
-                             respectively.
 
         Returns:
             int: Distance measured.
@@ -58,7 +61,9 @@ class SerialSensor(Sensor):
             return -1
 
         distance_bytes = protocol[start:end]
-        return int.from_bytes(distance_bytes, byteorder=byteorder)
+        return int.from_bytes(
+            distance_bytes, byteorder=self.settings.byte_order
+        )
 
     def is_valid_protocol(self, protocol: list[int], start_byte=0) -> bool:
         """
@@ -74,8 +79,8 @@ class SerialSensor(Sensor):
         """
         if (
             not protocol
-            or not protocol[: len(self.protocol_header)]
-            == self.protocol_header
+            or not protocol[: len(self.settings.length)]
+            == self.settings.header
         ):
             return False
 

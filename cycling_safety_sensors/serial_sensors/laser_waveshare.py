@@ -1,4 +1,4 @@
-from .serial_sensor import SerialSensor
+from .serial_sensor import ProtocolSettings, SerialSensor
 
 BAUDRATE = 921600
 PROTOCOL_LENGTH = 16
@@ -17,7 +17,8 @@ class LaserWaveshare(SerialSensor):
         Args:
             port (str): Port which the sensor uses.
         """
-        super().__init__(port, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
+        settings = ProtocolSettings(PROTOCOL_LENGTH, PROTOCOL_HEADER, "little")
+        super().__init__(port, BAUDRATE, settings)
 
     def get_distance(self) -> int:
         """
@@ -26,4 +27,4 @@ class LaserWaveshare(SerialSensor):
         Returns:
             int: Distance in cm, otherwise -1 if unable to measure.
         """
-        return super().get_distance(8, 11, "little")
+        return super().get_distance(8, 11)

@@ -1,4 +1,4 @@
-from .serial_sensor import SerialSensor
+from .serial_sensor import ProtocolSettings, SerialSensor
 
 BAUDRATE = 115200
 PROTOCOL_LENGTH = 13
@@ -18,7 +18,8 @@ class LaserBB2XJRT(SerialSensor):
         Args:
             port (str): Port which the sensor uses.
         """
-        super().__init__(port, BAUDRATE, PROTOCOL_LENGTH, PROTOCOL_HEADER)
+        settings = ProtocolSettings(PROTOCOL_LENGTH, PROTOCOL_HEADER)
+        super().__init__(port, BAUDRATE, settings)
 
     def get_distance(self) -> int:
         """
