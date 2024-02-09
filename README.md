@@ -2,11 +2,27 @@
 
 The goal of this module is to create a standardized API for the Cycling Safety project so that sensor data can be easily retreived.
 
-The first time I wrote this code, I thought I was being smart by writing "clean code" and reducing redundancies. However, two months later I needed to implement the code for another sensor and I lost my mind trying to integrate it into the tightly-coupled mess that I created. I abstracted way too hard and tried to be too smart. Therefore, I am refactoring the code for the distance sensors into an indpendent module that hopefully allows me to easily integrate new sensors in the future.
+## Usage
 
-## TODO
+Each sensor can be imported from its respective module and data is read with the `get_distance()` method.
 
-- Add commands for laser bb2x sensor.
+```python
+from serial.serial_sensors import LaserBB2XJRT
+
+sensor = LaserBB2XJRT("/dev/ttyS0")
+distance = sensor.get_distance()
+print(f"The distance measured is {distance}")
+```
+
+## Sensor Available
+
+- Serial Sensors
+  - Laser by Waveshare
+  - Laser BB2X by Chengdu JRT
+  - Laser SEN0524 by DFRobot
+  - Ultrasonic A02YYUW by DFRobot
+- I2C Sensors
+  - LiDAR Lite v4 by Garmin
 
 ## Overview
 
