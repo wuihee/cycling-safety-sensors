@@ -73,7 +73,7 @@ class SerialSensor(Sensor):
         if not protocol:
             return False
 
-        current_header = tuple(protocol[: self.settings.protocol_length])
+        current_header = tuple(protocol[: len(self.settings.protocol_header)])
         if current_header != self.settings.protocol_header:
             return False
 
