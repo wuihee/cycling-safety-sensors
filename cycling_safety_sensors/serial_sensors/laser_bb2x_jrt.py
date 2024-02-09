@@ -1,8 +1,10 @@
-from .serial_sensor import ProtocolSettings, SerialSensor
+from .serial_sensor import SerialSensor, SerialSensorSettings
 
 BAUDRATE = 115200
 PROTOCOL_LENGTH = 13
-PROTOCOL_HEADER = [130]
+PROTOCOL_HEADER = (130,)
+DISTANCE_INDICES = 6, 10
+CHECKSUM_START_INDEX = 1
 GET_DISTANCE_COMMAND = b"\xaa\x00\x00\x20\x00\x01\x00\x02\x23"
 
 
@@ -18,8 +20,14 @@ class LaserBB2XJRT(SerialSensor):
         Args:
             port (str): Port which the sensor uses.
         """
-        settings = ProtocolSettings(PROTOCOL_LENGTH, PROTOCOL_HEADER)
-        super().__init__(port, BAUDRATE, settings)
+        settings = SerialSensorSettings(
+            BAUDRATE,
+            PROTOCOL_LENGTH,
+            PROTOCOL_HEADER,
+            DISTANCE_INDICES,
+            CHECKSUM_START_INDEX,
+        )
+        super().__init__(port, settings)
 
     def get_distance(self) -> int:
         """
@@ -29,17 +37,4 @@ class LaserBB2XJRT(SerialSensor):
             int: The distance measured in cm, or -1 if unable to measure.
         """
         self.ser.write(GET_DISTANCE_COMMAND)
-        return super().get_distance(6, 10)
-
-    def is_valid_protocol(self, protocol: list[int]) -> bool:
-        """
-        Check if a protocol is valid.
-
-        Args:
-            protocol (list[int]): Current protocol consisting of a list of
-                                  bytes read from the serial port.
-
-        Returns:
-            bool: True if protocol is valid, otherwise false.
-        """
-        return super().is_valid_protocol(protocol, 1)
+        return super().get_distance()

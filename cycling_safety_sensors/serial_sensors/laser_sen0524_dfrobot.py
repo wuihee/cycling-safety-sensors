@@ -1,8 +1,10 @@
-from .serial_sensor import ProtocolSettings, SerialSensor
+from .serial_sensor import SerialSensor, SerialSensorSettings
 
 BAUDRATE = 115200
 PROTOCOL_LENGTH = 16
-PROTOCOL_HEADER = [0x57]
+PROTOCOL_HEADER = (87,)
+DISTANCE_INDICES = 8, 11
+BYTE_ORDER = "little"
 
 
 class LaserSen0524DFRbobot(SerialSensor):
@@ -17,14 +19,11 @@ class LaserSen0524DFRbobot(SerialSensor):
         Args:
             port (str): Port which the sensor uses.
         """
-        settings = ProtocolSettings(PROTOCOL_LENGTH, PROTOCOL_HEADER, "little")
-        super().__init__(port, BAUDRATE, settings)
-
-    def get_distance(self) -> int:
-        """
-        Retrieves the distance measured by the SEN0524 laser sensor.
-
-        Returns:
-            int: Distance measured in mm.
-        """
-        return super().get_distance(8, 11)
+        settings = SerialSensorSettings(
+            BAUDRATE,
+            PROTOCOL_LENGTH,
+            PROTOCOL_HEADER,
+            DISTANCE_INDICES,
+            byte_order=BYTE_ORDER,
+        )
+        super().__init__(port, settings)

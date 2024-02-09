@@ -6,13 +6,12 @@ from ..sensor import Sensor
 
 
 @dataclass
-class ProtocolSettings:
-    """
-    ProtocolSetup defines a few parameters for the protocol of each sensor.
-    """
-
-    length: int
-    header: list[int]
+class SerialSensorSettings:
+    baudrate: int
+    protocol_length: int
+    protocol_header: tuple[int]
+    distance_indices: tuple[int]
+    checksum_start_index: int = 0
     byte_order: str = "big"
 
 
@@ -21,9 +20,7 @@ class SerialSensor(Sensor):
     Base class for sensors.
     """
 
-    def __init__(
-        self, port: str, baudrate: int, protocol_settings: ProtocolSettings
-    ) -> None:
+    def __init__(self, port: str, settings: SerialSensorSettings) -> None:
         """
         Initialize SerialSensorBase.
 
@@ -32,8 +29,8 @@ class SerialSensor(Sensor):
             baudrate (int): Baudrate of sensor.
             protocol_settings (ProtocolSettings):
         """
-        self.settings = protocol_settings
-        self.ser = serial.Serial(port, baudrate, timeout=1)
+        self.settings = settings
+        self.ser = serial.Serial(port, self.settings.baudrate, timeout=1)
         self.ser.reset_input_buffer()
 
     def read_protocol(self) -> list[int]:
@@ -43,15 +40,11 @@ class SerialSensor(Sensor):
         Returns:
             list[int]: List of bytes consisting of a standard protocol.
         """
-        return [int(b, 16) for b in self.ser.read(self.settings.length)]
+        return list(self.ser.read(self.settings.protocol_length))
 
-    def get_distance(self, start: int, end: int) -> int:
+    def get_distance(self) -> int:
         """
         Reads distance value from protocol.
-
-        Args:
-            start (int): Starting byte position.
-            end (int): End byte position.
 
         Returns:
             int: Distance measured.
@@ -60,12 +53,12 @@ class SerialSensor(Sensor):
         if not self.is_valid_protocol(protocol):
             return -1
 
-        distance_bytes = protocol[start:end]
+        start, end = self.settings.distance_indices
         return int.from_bytes(
-            distance_bytes, byteorder=self.settings.byte_order
+            protocol[start:end], byteorder=self.settings.byte_order
         )
 
-    def is_valid_protocol(self, protocol: list[int], start_byte=0) -> bool:
+    def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
         Check if given protocol is valid.
 
@@ -77,11 +70,12 @@ class SerialSensor(Sensor):
         Returns:
             bool: Returns true if valid, otherwise false.
         """
-        if (
-            not protocol
-            or not protocol[: len(self.settings.length)]
-            == self.settings.header
-        ):
+        if not protocol:
             return False
 
-        return sum(protocol[start_byte:-1]) % 256 == protocol[-1]
+        current_header = tuple(protocol[: len(self.settings.protocol_length)])
+        if current_header != self.settings.protocol_header:
+            return False
+
+        checksum = sum(protocol[self.settings.checksum_start_index : -1])
+        return checksum % 256 == protocol[-1]

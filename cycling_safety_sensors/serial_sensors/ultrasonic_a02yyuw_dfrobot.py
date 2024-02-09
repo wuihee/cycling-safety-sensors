@@ -1,8 +1,9 @@
-from .serial_sensor import ProtocolSettings, SerialSensor
+from .serial_sensor import SerialSensor, SerialSensorSettings
 
 BAUDRATE = 9600
 PROTOCOL_LENGTH = 4
-PROTOCOL_HEADER = []
+PROTOCOL_HEADER = tuple()
+DISTANCE_INDICES = 1, 3
 
 
 class UltrasonicA02YYUWDFRobot(SerialSensor):
@@ -17,14 +18,10 @@ class UltrasonicA02YYUWDFRobot(SerialSensor):
         Args:
             port (str): Port which the sensor uses.
         """
-        settings = ProtocolSettings(PROTOCOL_LENGTH, PROTOCOL_HEADER)
-        super().__init__(port, BAUDRATE, settings)
-
-    def get_distance(self) -> int:
-        """
-        Return the distance measured by the A02YYUW sensor.
-
-        Returns:
-            int: Distance measured in mm.
-        """
-        return super().get_distance(1, 3)
+        settings = SerialSensorSettings(
+            BAUDRATE,
+            PROTOCOL_LENGTH,
+            PROTOCOL_HEADER,
+            DISTANCE_INDICES,
+        )
+        super().__init__(port, settings)
