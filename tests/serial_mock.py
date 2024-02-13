@@ -1,9 +1,12 @@
-class SerialMock:
+class BaseSerialMock:
     def __init__(self, port: str, baudrate: int, timeout=1) -> None:
-        self.protocol = "57 00 ff 00 9e 8f 00 00 ad 08 00 00 03 00 ff 3a"
+        self._protocol = ""
+
+    def set_protocol(self, protocol_bytes: str) -> None:
+        self._protocol = protocol_bytes
 
     def reset_input_buffer(self) -> None:
         pass
 
-    def read(self, bytes: int) -> list[int]:
-        return [int(b, 16) for b in self.protocol.split()]
+    def read(self, num_bytes: int) -> bytes:
+        return [int(b, 16) for b in self._protocol.split()]
