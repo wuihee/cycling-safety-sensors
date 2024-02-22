@@ -168,3 +168,4 @@ cython_debug/
 sensor_data.txt
 
 .DS_Store
+.vscode
