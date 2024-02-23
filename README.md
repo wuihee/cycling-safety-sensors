@@ -7,6 +7,20 @@ The goal of this module is to create a standardized API for the Cycling Safety p
 - [ ] Include BB2X Unit Tests
 - [ ] Add code for I2C sensors and LiDAR Lite v4.
 
+## Installation
+
+### Pip
+
+```bash
+pip install git+https://github.com/wuihee/cycling-safety-sensors.git
+```
+
+### Poetry
+
+```bash
+poetry add git+https://github.com/wuihee/cycling-safety-sensors.git
+```
+
 ## Usage
 
 Each sensor can be imported from its respective module and data is read with the `get_distance()` method.
