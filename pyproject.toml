@@ -6,7 +6,7 @@ authors = ["wuihee <wuihee@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.8"
 pytest = "^8.0.0"
 pyserial = "^3.5"
 smbus2 = "^0.4.3"
