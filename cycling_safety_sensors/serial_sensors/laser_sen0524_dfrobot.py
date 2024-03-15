@@ -7,7 +7,7 @@ DISTANCE_INDICES = 8, 11
 BYTE_ORDER = "little"
 
 
-class LaserSen0524DFRbobot(SerialSensor):
+class LaserSen0524DFRobot(SerialSensor):
     """
     Time of Flight laser sensor 0524 by DFRobot.
     """
