@@ -26,7 +26,7 @@ poetry add git+https://github.com/wuihee/cycling-safety-sensors.git
 Each sensor can be imported from its respective module and data is read with the `get_distance()` method.
 
 ```python
-from serial.serial_sensors import LaserBB2XJRT
+from cycling_safety_sensors.serial_sensors import LaserBB2XJRT
 
 sensor = LaserBB2XJRT("/dev/ttyS0")
 distance = sensor.get_distance()
