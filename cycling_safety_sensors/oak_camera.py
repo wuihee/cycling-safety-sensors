@@ -105,7 +105,10 @@ class CameraWithSensor:
     def _process_tracklets(self, frame, tracklets_data, show_preview):
         for t in tracklets_data:
             data = self._get_vehicle_distance()
-            self._write_output(data)
+            if self.output_file:
+                with open(self.output_file, "a") as file:
+                    file.write(data + "\n")
+            print(data)
             if show_preview:
                 self._show_preview(frame, t)
 
@@ -131,16 +134,3 @@ class CameraWithSensor:
             frame, label, (x1 + 10, y1 + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255
         )
         cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), cv2.FONT_HERSHEY_SIMPLEX)
-
-    def _write_output(self, data: str):
-        """
-        Helper method to write output of the sensor, to either a file or stdout.
-
-        Args:
-            data (str): The data to write.
-        """
-        if not self.output_file:
-            print(data)
-        else:
-            with open(self.output_file) as file:
-                file.write(data + "\n")
