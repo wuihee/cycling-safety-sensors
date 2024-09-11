@@ -40,7 +40,9 @@ class SerialSensor(Sensor):
         Returns:
             list[int]: List of bytes consisting of a standard protocol.
         """
-        return list(self.ser.read(self.settings.protocol_length))
+        protocol = self.ser.read(self.settings.protocol_length)
+        print(protocol)
+        return list(protocol)
 
     def get_distance(self) -> int:
         """
