@@ -54,9 +54,7 @@ class SerialSensor(Sensor):
             return -1
 
         start, end = self.settings.distance_indices
-        return int.from_bytes(
-            protocol[start:end], byteorder=self.settings.byte_order
-        )
+        return int.from_bytes(protocol[start:end], byteorder=self.settings.byte_order)
 
     def is_valid_protocol(self, protocol: list[int]) -> bool:
         """
