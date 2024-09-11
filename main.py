@@ -6,6 +6,7 @@ camera_with_sensor = CameraWithSensor(
     sensor,
     xml_path="./yolo/yolov6t_coco_416x416.xml",
     bin_path="./yolo/yolov6t_coco_416x416.bin",
+    output_file="./data.txt",
 )
 
 if __name__ == "__main__":
