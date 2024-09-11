@@ -113,9 +113,10 @@ class CameraWithSensor:
         t = datetime.now().strftime("%H:%M:%S")
         try:
             data = f"{t} {self.sensor.get_distance()}"
-            # time.sleep(0.02)
+            time.sleep(0.02)
             return data
-        except OSError:
+        except OSError as error:
+            print(error)
             return t
 
     def _show_preview(self, frame, tracklet) -> None:
