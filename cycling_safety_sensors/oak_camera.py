@@ -115,8 +115,7 @@ class CameraWithSensor:
             data = f"{t} {self.sensor.get_distance()}"
             time.sleep(0.02)
             return data
-        except OSError as error:
-            print(error)
+        except OSError:
             return t
 
     def _show_preview(self, frame, tracklet) -> None:
