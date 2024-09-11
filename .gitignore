@@ -166,6 +166,7 @@ cython_debug/
 
 # Ignore data files generated.
 sensor_data.txt
+data.txt
 
 .DS_Store
 .vscode
