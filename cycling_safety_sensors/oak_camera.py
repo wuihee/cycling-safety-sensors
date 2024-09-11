@@ -9,7 +9,9 @@ from .sensor import Sensor
 
 
 class CameraWithSensor:
-    def __init__(self, distance_sensor: Sensor, xml_path: str, bin_path: str) -> None:
+    def __init__(
+        self, distance_sensor: Sensor, xml_path: str, bin_path: str, output_file=None
+    ) -> None:
         """
         Inialize CameraWithSensor object that uses DepthAI's camera to measure
         distance when a vehicle is detected.
@@ -18,12 +20,14 @@ class CameraWithSensor:
             distance_sensor (Sensor): Distance sensor used to measure distance.
             xml_path (str): Path to YOLO file.
             bin_path (str): Path to YOLO file.
+            output_file (str): File to write data to. If None, print data.
         """
         self.sensor = distance_sensor
         self.labels = {2: "Car", 5: "Bus", 8: "Truck"}
         self.network_path = blobconverter.from_openvino(
             xml=xml_path, bin=bin_path, shaves=6
         )
+        self.output_file = output_file
         self.pipeline = depthai.Pipeline()
         self._setup_pipeline()
 
@@ -101,7 +105,7 @@ class CameraWithSensor:
     def _process_tracklets(self, frame, tracklets_data, show_preview):
         for t in tracklets_data:
             data = self._get_vehicle_distance()
-            print(data)
+            self._write_output(data)
             if show_preview:
                 self._show_preview(frame, t)
 
@@ -109,7 +113,7 @@ class CameraWithSensor:
         t = datetime.now().strftime("%H:%M:%S")
         try:
             data = f"{t} {self.sensor.get_distance()}"
-            time.sleep(0.02)
+            # time.sleep(0.02)
             return data
         except OSError:
             return t
@@ -127,3 +131,16 @@ class CameraWithSensor:
             frame, label, (x1 + 10, y1 + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255
         )
         cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), cv2.FONT_HERSHEY_SIMPLEX)
+
+    def _write_output(self, data: str):
+        """
+        Helper method to write output of the sensor, to either a file or stdout.
+
+        Args:
+            data (str): The data to write.
+        """
+        if not self.output_file:
+            print(data)
+        else:
+            with open(self.output_file) as file:
+                file.write(data + "\n")
