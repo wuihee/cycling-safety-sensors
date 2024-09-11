@@ -49,6 +49,7 @@ class SerialSensor(Sensor):
         Returns:
             int: Distance measured.
         """
+        self.ser.reset_input_buffer()
         protocol = self.read_protocol()
         if not self.is_valid_protocol(protocol):
             return -1
