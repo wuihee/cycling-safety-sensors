@@ -7,19 +7,12 @@ then
     exit
 fi
 
-$service_name="sensor-autostart"
-$script_path="$(pwd)/main.py"
-
-# Verify that the provided script path exists.
-if [ ! -f "$script_path" ]
-then
-    echo "The provided path doesn't exist."
-    exit
-fi
+service_name="sensor_autostart"
 
 # Create the systemd service file content.
 service_content="[Service]
-ExecStart=/usr/bin/poetry run python $script_path
+WorkingDirectory=$(pwd)
+ExecStart=/home/pi/.local/bin/poetry run python main.py
 User=$SUDO_USER
 
 [Install]
