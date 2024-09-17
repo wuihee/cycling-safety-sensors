@@ -7,6 +7,15 @@ The goal of this module is to create a standardized API for the Cycling Safety p
 - [ ] Include BB2X Unit Tests
 - [ ] Add code for I2C sensors and LiDAR Lite v4.
 
+## Auto Run
+
+**To automatically run `main.py` on Raspberry Pi startup, run the `autorun.sh` script:**
+
+```bash
+chmod +x autorun.sh
+sudo ./autorun.sh
+```
+
 ## Installation
 
 ### Pip
@@ -21,7 +30,7 @@ pip install git+https://github.com/wuihee/cycling-safety-sensors.git
 poetry add git+https://github.com/wuihee/cycling-safety-sensors.git
 ```
 
-## Usage
+## API
 
 Each sensor can be imported from its respective module and data is read with the `get_distance()` method.
 
